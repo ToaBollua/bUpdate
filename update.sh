@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# ASCII banner
+# Banner ASCII
 clear
 echo -e "\033[1;32m"
 cat << "EOF"
@@ -15,57 +15,41 @@ EOF
 
 echo "Bienvenido al actualizador de sistema..."
 
-# Preguntar al usuario si quiere actualizar cada sección
-# Sientete libre de copiar el proceso para otros gestores de
-# paquetes o sistemas similares que quieras actualizar
-# de forma más cómoda con un solo comando!
+# Función para actualizar un gestor de paquetes
+update_package_manager() {
+    local manager_name=$1
+    local update_command=$2
+    local confirmation_message=$3
 
-echo -e "\033[1;32m"
-read -p "¿Quieres actualizar los paquetes de Pacman? (S/n) " pacman_update
+    echo -e "\033[1;32m"
+    read -p "$confirmation_message (S/n) " update_choice
+    update_choice="${update_choice:-s}"  # Establece la opción de actualización por defecto a "S"
 
-pacman_update="${pacman_update:-s}" 	# Esta linea settea la opción de update
-					# a "S" para que el usuario no necesite
-					# pulsar 's' explicitamente. Ahorrando
-					# un poco de tiempo para el apresurado.
+    if [[ "$update_choice" == "s" ]]; then
+        if eval "$update_command"; then
+            echo "Paquetes de $manager_name actualizados."
+        else
+            echo "Error al actualizar los paquetes de $manager_name."
+        fi
+    else
+        echo "Paquetes de $manager_name no actualizados."
+    fi
+}
 
-if [[ "$pacman_update" == "s" ]]; then
-    sudo pacman -Scc
-    sudo pacman -Syu
-    echo "Paquetes de Pacman actualizados."
-else
-    echo "Paquetes de Pacman no actualizados."
-fi
+#   Actualiza los distintos gestores de paquetes.
+#   Comenta o descomenta los gestores de paquetes
+#   que uses en tu sistema.
 
-echo -e "\033[1;32m"
-read -p "Quieres actualizar los paquetes de Yay? (S/n) " yay_update
-yay_update="${yay_update:-s}"
-if [[ "$yay_update" == "s" ]]; then
-    yay -Scc
-    yay -Syu
-    echo "Paquetes de Yay actualizados."
-else
-    echo "Paquetes de Yay no actualizados."
-fi
+update_package_manager "Pacman" "sudo pacman -Scc --noconfirm && sudo pacman -Syu --noconfirm" "Quieres actualizar los paquetes de Pacman?"
 
-echo -e "\033[1;32m"
-read -p "Quieres actualizar los paquetes de Flatpak? (S/n) " flatpak_update
-flatpak_update="${flatpak_update:-s}"
-if [[ "$flatpak_update" == "s" ]]; then
-    flatpak update
-    echo "Paquetes de Flatpak actualizados."
-else
-    echo "Paquetes de Flatpak no actualizados."
-fi
+update_package_manager "Yay" "yay -Scc --noconfirm && yay -Syu --noconfirm" "Quieres actualizar los paquetes de Yay?"
 
-echo -e "\033[1;32"
-read -p "Quieres actualizar la base de datos de virus? (S/n) " virus_update
-virus_update="${virus_update:-s}"
-if [[ "$virus_update" == "s" ]]; then
-    sudo freshclam
-    echo "Base de datos de virus actualizada."
-else
-    echo "Base de datos de virus no actualizada."
-fi
+update_package_manager "Flatpak" "flatpak update" "Quieres actualizar los paquetes de Flatpak?"
+
+update_package_manager "ClamAV" "sudo freshclam" "Quieres actualizar la base de datos de virus?"
+
+#update_package_manager "APT" "sudo apt update && sudo apt upgrade" "Quieres actualizar los paquetes de APT?"
+
+
 
 echo "====== Toda tu mierda se actualizó ======"
-
