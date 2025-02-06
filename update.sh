@@ -50,6 +50,6 @@ update_package_manager "ClamAV" "sudo freshclam" "Quieres actualizar la base de 
 
 #update_package_manager "APT" "sudo apt update && sudo apt upgrade" "Quieres actualizar los paquetes de APT?"
 
-
+#update_package_manager "PKG" "pkg update && pkg upgrade" "Quieres actualizar los paquetes PKG?"
 
 echo "====== Toda tu mierda se actualizó ======"
