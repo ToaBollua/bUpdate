@@ -52,4 +52,6 @@ update_package_manager "ClamAV" "sudo freshclam" "Quieres actualizar la base de 
 
 #update_package_manager "PKG" "pkg update && pkg upgrade" "Quieres actualizar los paquetes PKG?"
 
+#update_package_manager "DNF" "sudo dnf update" "Quieres actualizar los paquetes DNF?"
+
 echo "====== Toda tu mierda se actualizó ======"
